@@ -33,7 +33,7 @@ export const apiSlice = createApi({
     }),
 
     // Conversations endpoints
-    getConversations: builder.query<Conversation[], void>({
+    getConversations: builder.query<{ data: Conversation[] }, void>({
       query: () => "/conversations",
       providesTags: ["Conversation"],
     }),
@@ -48,7 +48,7 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ["Conversation"],
     }),
-    getMessages: builder.query<Message[], string>({
+    getMessages: builder.query<{ messages: Message[] }, string>({
       query: (conversationId) => `/conversations/${conversationId}/messages`,
       providesTags: (_result, _error, conversationId) => [
         { type: "Message", id: conversationId },

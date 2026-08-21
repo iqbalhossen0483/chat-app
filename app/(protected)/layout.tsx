@@ -11,6 +11,10 @@ type Props = {
 export default function ProtectedLayout({ children }: Props) {
   const session = useSession();
 
+  if (session.status === "loading") {
+    return <div>Loading...</div>;
+  }
+
   if (!session.data) {
     return redirect("/auth");
   }

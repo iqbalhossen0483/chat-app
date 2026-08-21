@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Light Theme Palette */
   --primary: #006d77;
@@ -15,21 +17,19 @@
   --glass-border: rgba(255, 255, 255, 0.6);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Dark Theme Standard Black & White */
-    --primary: #83c5be;
-    --secondary: #006d77;
-    --background: #0b0f12;
-    --surface: #141a21;
-    --accent: #e29578;
-    --terracotta: #ffddd2;
-    --foreground: #f8fafc;
-    --muted-foreground: #94a3b8;
-    --border: rgba(255, 255, 255, 0.1);
-    --glass-bg: rgba(20, 26, 33, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.08);
-  }
+.dark {
+  /* Dark Theme */
+  --primary: #83c5be;
+  --secondary: #006d77;
+  --background: #0b0f12;
+  --surface: #141a21;
+  --accent: #e29578;
+  --terracotta: #ffddd2;
+  --foreground: #f8fafc;
+  --muted-foreground: #94a3b8;
+  --border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(20, 26, 33, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
 }
 
 @theme inline {
