@@ -12,7 +12,7 @@ export default function Typography({
 } & React.HTMLAttributes<HTMLElement>) {
   switch (variant) {
     case "h1":
-      <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${className}`} {...props}>
+      return <h1 className={`text-4xl sm:text-5xl font-extrabold tracking-tight ${className}`} {...props}>
         {children}
       </h1>;
     case "h2":
