@@ -1,10 +1,17 @@
+"use client";
 import Button from "@/components/ui/Button";
 import Typography from "@/components/ui/Typography";
 import { ArrowRight, MessageSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import React from "react";
+import Avatar from "../ui/Avatar";
 
 export default function LandingHeader() {
+  const session = useSession();
+
+  const user = session.data?.user;
+
   return (
     <header className="sticky top-0 z-50 glass-panel border-b border-border/40">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -20,16 +27,24 @@ export default function LandingHeader() {
           </Typography>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/auth">
-            <Button variant="outline" size="sm">
-              Sign In
-            </Button>
-          </Link>
-          <Link href="/chat">
-            <Button variant="primary" size="sm" className="gap-2">
-              Launch Platform <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
+          {!user && (
+            <Link href="/auth">
+              <Button variant="secondary" size="sm" className="gap-2">
+                Login <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          )}
+          {user && (
+            <>
+              <Link href="/chat">
+                <Button variant="primary" size="sm" className="gap-2">
+                  Go Platform <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+
+              <Avatar name={user.name as string} status="online" size="sm" />
+            </>
+          )}
         </div>
       </div>
     </header>
