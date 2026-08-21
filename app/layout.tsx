@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Realtime Chat App",
+  title: "VortexChat",
   description:
     "A realtime chat app where you can chat with other users directly or in a group.",
   icons: {

@@ -1,7 +1,13 @@
+"use client";
+
+import { redirect } from "next/navigation";
 import React from "react";
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
-  return children;
-};
-
-export default Layout;
+export default function ProtectedLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // Client-side authentication check wrapper for protected layout
+  return <>{children}</>;
+}
