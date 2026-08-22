@@ -1,6 +1,5 @@
-import { useDebounce } from "@/hooks/useDebouncer";
 import { Conversation } from "@/types/type";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ConversationList from "./ConversationList";
 import SidebarFooter from "./SidebarFooter";
 import SidebarHeader from "./SidebarHeader";
@@ -9,7 +8,8 @@ interface SidebarProps {
   conversations: Conversation[];
   activeConversationId?: string;
   onSelectConversation: (id: string) => void;
-  onOpenNewChat: () => void;
+  onOpenNewGroup: () => void;
+  onOpenNewDirectMessage: () => void;
   currentUser?: { name?: string | null; phone?: string | null };
 }
 
@@ -17,17 +17,11 @@ export default function Sidebar({
   conversations,
   activeConversationId,
   onSelectConversation,
-  onOpenNewChat,
+  onOpenNewGroup,
+  onOpenNewDirectMessage,
   currentUser,
 }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const searchValue = useDebounce(searchQuery, 500);
-
-  useEffect(() => {
-    if (searchValue) {
-      // api call will be here
-    }
-  }, [searchValue]);
 
   const filteredConversations = conversations.filter((conv) => {
     const name =
@@ -43,6 +37,7 @@ export default function Sidebar({
       <SidebarHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        onOpenNewDirectMessage={onOpenNewDirectMessage}
       />
 
       {/* Conversation List */}
@@ -54,7 +49,7 @@ export default function Sidebar({
       />
 
       {/* footer */}
-      <SidebarFooter currentUser={currentUser} onOpenNewChat={onOpenNewChat} />
+      <SidebarFooter currentUser={currentUser} onOpenNewChat={onOpenNewGroup} />
     </aside>
   );
 }

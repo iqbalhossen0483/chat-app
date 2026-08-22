@@ -1,7 +1,8 @@
 import { useGetConversationsQuery } from "@/store/api/chatApiSlice";
 import { MessageSquare } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import ChatArea from "./ChatArea";
+import CreateDirectMessage from "./CreateDirectMessage";
 import CreateNewGroup from "./CreateNewGroup";
 import Sidebar from "./Sidebar";
 
@@ -13,7 +14,9 @@ export default function ChatLayout({ currentUser }: ChatLayoutProps) {
   const [activeConversationId, setActiveConversationId] = useState<
     string | undefined
   >();
-  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
+  const [isNewGroupModalOpen, setIsNewGroupModalOpen] = useState(false);
+  const [isNewDirectMessageModalOpen, setIsNewDirectMessageModalOpen] =
+    useState(false);
 
   const {
     data: conversations = { data: [] },
@@ -31,8 +34,9 @@ export default function ChatLayout({ currentUser }: ChatLayoutProps) {
         conversations={conversations.data}
         activeConversationId={activeConversationId}
         onSelectConversation={setActiveConversationId}
-        onOpenNewChat={() => setIsNewChatModalOpen(true)}
+        onOpenNewGroup={() => setIsNewGroupModalOpen(true)}
         currentUser={currentUser}
+        onOpenNewDirectMessage={() => setIsNewDirectMessageModalOpen(true)}
       />
 
       <main className="flex-1 flex flex-col h-full overflow-hidden">
@@ -70,8 +74,14 @@ export default function ChatLayout({ currentUser }: ChatLayoutProps) {
       </main>
 
       <CreateNewGroup
-        isOpen={isNewChatModalOpen}
-        onClose={() => setIsNewChatModalOpen(false)}
+        isOpen={isNewGroupModalOpen}
+        onClose={() => setIsNewGroupModalOpen(false)}
+        onConversationCreated={(id) => setActiveConversationId(id)}
+      />
+
+      <CreateDirectMessage
+        isOpen={isNewDirectMessageModalOpen}
+        onClose={() => setIsNewDirectMessageModalOpen(false)}
         onConversationCreated={(id) => setActiveConversationId(id)}
       />
     </div>

@@ -1,45 +1,49 @@
 import Avatar from "@/components/ui/Avatar";
 import { Message } from "@/types/type";
-import React from "react";
 import Typography from "../ui/Typography";
 
 interface MessageBubbleProps {
-  message: Message;
+  message?: Message;
   currentUserId?: string;
+  draftMessage?: string;
 }
 
 export default function MessageBubble({
   message,
   currentUserId,
+  draftMessage,
 }: MessageBubbleProps) {
-  const isMe = message.sender === currentUserId;
+  const isMe = (message && message.sender === currentUserId) || draftMessage;
 
-  const formattedTime = new Date(message.createdAt).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const formattedTime =
+    (message &&
+      new Date(message.createdAt).toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      })) ||
+    (draftMessage && "Sending...");
 
   return (
     <div
       className={`flex items-end gap-2.5 my-2 ${isMe ? "justify-end" : "justify-start"}`}
     >
-      {!isMe && (
+      {!isMe && message && (
         <div className="mb-1">
-          <Avatar name="User" size="sm" />
+          <Avatar name={message.sender} size="sm" />
         </div>
       )}
       <div
         className={`max-w-[75%] md:max-w-[60%] rounded-2xl px-4 py-3 shadow-sm ${
           isMe
-            ? "bg-primary text-white rounded-br-none"
+            ? "bg-primary rounded-br-none"
             : "bg-surface border border-border text-foreground rounded-bl-none"
         }`}
       >
         <Typography
           variant="body"
-          className="text-sm leading-relaxed wrap-words whitespace-pre-wrap"
+          className={`text-sm leading-relaxed wrap-words whitespace-pre-wrap ${isMe ? "text-white" : ""}`}
         >
-          {message.text}
+          {message ? message.text : draftMessage}
         </Typography>
         <div
           className={`text-[10px] mt-1 text-right font-medium ${

@@ -70,7 +70,7 @@ export default function CreateNewGroup({
             Select Participants ({selectedUserIds.length} selected)
           </label>
           <InputField
-            placeholder="Search users..."
+            placeholder="Search users by name or phone"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             leftIcon={<Search className="w-4 h-4" />}

@@ -28,22 +28,29 @@ export const chatApiSlice = apiSlice.injectEndpoints({
       query: () => "/conversations",
       providesTags: ["Conversation"],
     }),
-    startDirectConversation: builder.mutation<
-      Conversation,
-      { recipientId: string }
-    >({
-      query: (body) => ({
-        url: "/conversations",
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Conversation"],
-    }),
+    startDirectConversation: builder.mutation<Conversation, { userId: string }>(
+      {
+        query: (body) => ({
+          url: "/conversations",
+          method: "POST",
+          body,
+        }),
+        invalidatesTags: ["Conversation"],
+      },
+    ),
     getMessages: builder.query<SingleConversationApiResponse, string>({
       query: (conversationId) => `/conversations/${conversationId}/messages`,
       providesTags: (_result, _error, conversationId) => [
         { type: "Message", id: conversationId },
       ],
+      transformResponse: (
+        response: SingleConversationApiResponse,
+      ): SingleConversationApiResponse => {
+        return {
+          ...response,
+          messages: [...response.messages].reverse(),
+        };
+      },
     }),
 
     // Messages endpoints

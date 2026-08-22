@@ -1,5 +1,6 @@
 import Avatar from "@/components/ui/Avatar";
 import Button from "@/components/ui/Button";
+import { errorHandler } from "@/services/error/errorHandler";
 import {
   useGetMessagesQuery,
   useSendMessageMutation,
@@ -13,11 +14,13 @@ interface ChatAreaProps {
   conversation: Conversation;
   currentUserId?: string;
 }
+type DraftMessage = { text: string; status: string } | null;
 
 export default function ChatArea({
   conversation,
   currentUserId,
 }: ChatAreaProps) {
+  const [draftMessage, setDraftMessage] = useState<DraftMessage>(null);
   const [text, setText] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -54,11 +57,12 @@ export default function ChatArea({
     }
   }, [messages, isUserScrolledUp]);
 
-  const handleSend = async (e: React.FormEvent) => {
+  const handleSend = async (e: React.SubmitEvent) => {
     e.preventDefault();
     if (!text.trim() || isSending) return;
 
     try {
+      setDraftMessage({ text, status: "pending" });
       await sendMessage({
         conversationId: conversation._id,
         text: text.trim(),
@@ -67,7 +71,7 @@ export default function ChatArea({
       setIsUserScrolledUp(false);
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (err) {
-      console.error("Failed to send message:", err);
+      errorHandler(err, "Failed to send message");
     }
   };
 
@@ -130,9 +134,9 @@ export default function ChatArea({
             </p>
           </div>
         ) : (
-          messages.messages.map((msg) => (
+          messages.messages.map((msg, index) => (
             <MessageBubble
-              key={msg._id}
+              key={index}
               message={msg}
               currentUserId={currentUserId}
             />
