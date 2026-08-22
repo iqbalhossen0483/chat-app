@@ -2,6 +2,7 @@ import Modal from "@/components/ui/Modal";
 import Typography from "@/components/ui/Typography";
 import { errorHandler } from "@/services/error/errorHandler";
 import {
+  useAddParticipantsMutation,
   usePromoteAdminMutation,
   useRemoveParticipantMutation,
   useRenameGroupMutation,
@@ -35,6 +36,8 @@ export default function SeeAllMembersModal({
     useRemoveParticipantMutation();
   const [promoteAdmin, { isLoading: isPromoting }] = usePromoteAdminMutation();
   const [renameGroup, { isLoading: isRenaming }] = useRenameGroupMutation();
+  const [addParticipant, { isLoading: isAdding }] =
+    useAddParticipantsMutation();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
@@ -47,8 +50,15 @@ export default function SeeAllMembersModal({
     setIsRenameModalOpen(true);
   };
 
-  const handleConfirmAddParticipant = (identifier: string) => {
-    alert(`Participant added: ${identifier}`);
+  const handleConfirmAddParticipant = async (userIds: string[]) => {
+    try {
+      await addParticipant({
+        conversationId: conversation._id,
+        userIds,
+      });
+    } catch (error) {
+      errorHandler(error, "Failed to add participants");
+    }
   };
 
   const handleConfirmRename = async (newName: string) => {
@@ -99,10 +109,12 @@ export default function SeeAllMembersModal({
             >
               Member List
             </Typography>
-            <GroupActionsMenu
-              onAddParticipant={handleAddParticipant}
-              onRenameGroup={handleRenameGroup}
-            />
+            {isCurrentUserAdmin && (
+              <GroupActionsMenu
+                onAddParticipant={handleAddParticipant}
+                onRenameGroup={handleRenameGroup}
+              />
+            )}
           </div>
 
           {/* Members List */}
@@ -144,6 +156,7 @@ export default function SeeAllMembersModal({
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onAdd={handleConfirmAddParticipant}
+        isLoading={isAdding}
       />
 
       <RenameGroupModal

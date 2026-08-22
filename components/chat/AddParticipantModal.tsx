@@ -1,64 +1,47 @@
-import React, { useState } from "react";
-import Modal from "@/components/ui/Modal";
-import Typography from "@/components/ui/Typography";
-import InputField from "@/components/ui/InputField";
 import Button from "@/components/ui/Button";
+import Modal from "@/components/ui/Modal";
+import React, { useState } from "react";
+import SelectParticipants from "./SelectParticipants";
 
 interface AddParticipantModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAdd: (phoneOrId: string) => void;
+  onAdd: (userIds: string[]) => Promise<void>;
+  isLoading?: boolean;
 }
 
 export default function AddParticipantModal({
   isOpen,
   onClose,
   onAdd,
+  isLoading = false,
 }: AddParticipantModalProps) {
-  const [identifier, setIdentifier] = useState("");
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.SubmitEvent) => {
     e.preventDefault();
-    if (!identifier.trim()) return;
-    onAdd(identifier.trim());
-    setIdentifier("");
+    if (!selectedUserIds.length) return;
+    await onAdd(selectedUserIds);
+    setSelectedUserIds([]);
     onClose();
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Add Participant">
       <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <Typography variant="body" className="text-xs text-muted-foreground mb-2">
-            Enter the user ID or phone number of the participant you wish to add.
-          </Typography>
-          <InputField
-            type="text"
-            placeholder="User ID or Phone number..."
-            value={identifier}
-            onChange={(e) => setIdentifier(e.target.value)}
-            className="w-full"
-            autoFocus
-          />
-        </div>
-        <div className="flex items-center justify-end gap-2 pt-2">
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={onClose}
-            className="px-4 py-2 text-xs"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            disabled={!identifier.trim()}
-            className="px-4 py-2 text-xs"
-          >
-            Add
-          </Button>
-        </div>
+        <SelectParticipants
+          selectedUserIds={selectedUserIds}
+          setSelectedUserIds={setSelectedUserIds}
+        />
+        <Button
+          type="submit"
+          variant="primary"
+          className="w-full"
+          disabled={selectedUserIds.length === 0 || isLoading}
+          isLoading={isLoading}
+        >
+          Add Participant
+        </Button>
       </form>
     </Modal>
   );
