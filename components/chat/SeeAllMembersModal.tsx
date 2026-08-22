@@ -4,13 +4,16 @@ import { errorHandler } from "@/services/error/errorHandler";
 import {
   usePromoteAdminMutation,
   useRemoveParticipantMutation,
+  useRenameGroupMutation,
 } from "@/store/api/chatApiSlice";
 import { Conversation } from "@/types/type";
 import { useSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+import AddParticipantModal from "./AddParticipantModal";
 import GroupActionsMenu from "./GroupActionsMenu";
 import GroupParticipantItem from "./GroupParticipantItem";
+import RenameGroupModal from "./RenameGroupModal";
 
 interface SeeAllMembersModalProps {
   isOpen: boolean;
@@ -31,13 +34,33 @@ export default function SeeAllMembersModal({
   const [removeParticipant, { isLoading: isRemoving }] =
     useRemoveParticipantMutation();
   const [promoteAdmin, { isLoading: isPromoting }] = usePromoteAdminMutation();
+  const [renameGroup, { isLoading: isRenaming }] = useRenameGroupMutation();
+
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isRenameModalOpen, setIsRenameModalOpen] = useState(false);
 
   const handleAddParticipant = () => {
-    alert("Add participant action clicked");
+    setIsAddModalOpen(true);
   };
 
   const handleRenameGroup = () => {
-    alert("Rename group action clicked");
+    setIsRenameModalOpen(true);
+  };
+
+  const handleConfirmAddParticipant = (identifier: string) => {
+    alert(`Participant added: ${identifier}`);
+  };
+
+  const handleConfirmRename = async (newName: string) => {
+    try {
+      await renameGroup({
+        conversationId: conversation._id,
+        name: newName,
+      });
+      toast.success("Group renamed successfully");
+    } catch (error) {
+      errorHandler(error, "Failed to rename group");
+    }
   };
 
   const handleRemoveMember = async (participantId: string) => {
@@ -65,52 +88,71 @@ export default function SeeAllMembersModal({
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="space-y-2">
-        {/* Top Group Actions Menu Header */}
-        <div className="flex items-center justify-between pb-2">
-          <Typography
-            variant="body"
-            className="text-sm text-muted-foreground font-medium"
-          >
-            Member List
-          </Typography>
-          <GroupActionsMenu
-            onAddParticipant={handleAddParticipant}
-            onRenameGroup={handleRenameGroup}
-          />
-        </div>
-
-        {/* Members List */}
-        <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
-          {conversation.participants && conversation.participants.length > 0 ? (
-            conversation.participants.map((participant) => {
-              const isAdmin = !!conversation.admins?.includes(participant._id);
-
-              return (
-                <GroupParticipantItem
-                  key={participant._id}
-                  participant={participant}
-                  isAdmin={isAdmin}
-                  onRemove={handleRemoveMember}
-                  onMakeAdmin={handleMakeAdmin}
-                  currentUserId={currentUser?.id || ""}
-                  isRemoving={isRemoving}
-                  isPromoting={isPromoting}
-                  isCurrentUserAdmin={isCurrentUserAdmin}
-                />
-              );
-            })
-          ) : (
+    <>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <div className="space-y-2">
+          {/* Top Group Actions Menu Header */}
+          <div className="flex items-center justify-between pb-2">
             <Typography
-              variant="caption"
-              className="text-xs text-muted-foreground text-center py-4 block"
+              variant="body"
+              className="text-sm text-muted-foreground font-medium"
             >
-              No participants found.
+              Member List
             </Typography>
-          )}
+            <GroupActionsMenu
+              onAddParticipant={handleAddParticipant}
+              onRenameGroup={handleRenameGroup}
+            />
+          </div>
+
+          {/* Members List */}
+          <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+            {conversation.participants &&
+            conversation.participants.length > 0 ? (
+              conversation.participants.map((participant) => {
+                const isAdmin = !!conversation.admins?.includes(
+                  participant._id,
+                );
+
+                return (
+                  <GroupParticipantItem
+                    key={participant._id}
+                    participant={participant}
+                    isAdmin={isAdmin}
+                    onRemove={handleRemoveMember}
+                    onMakeAdmin={handleMakeAdmin}
+                    currentUserId={currentUser?.id || ""}
+                    isRemoving={isRemoving}
+                    isPromoting={isPromoting}
+                    isCurrentUserAdmin={isCurrentUserAdmin}
+                  />
+                );
+              })
+            ) : (
+              <Typography
+                variant="caption"
+                className="text-xs text-muted-foreground text-center py-4 block"
+              >
+                No participants found.
+              </Typography>
+            )}
+          </div>
         </div>
-      </div>
-    </Modal>
+      </Modal>
+
+      <AddParticipantModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onAdd={handleConfirmAddParticipant}
+      />
+
+      <RenameGroupModal
+        isOpen={isRenameModalOpen}
+        onClose={() => setIsRenameModalOpen(false)}
+        currentName={conversation.name || ""}
+        onRename={handleConfirmRename}
+        isLoading={isRenaming}
+      />
+    </>
   );
 }
