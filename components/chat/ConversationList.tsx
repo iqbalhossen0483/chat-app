@@ -1,4 +1,5 @@
 import { Conversation } from "@/types/type";
+import Typography from "../ui/Typography";
 import ConversationItem from "./ConversationItem";
 
 interface ConversationListProps {
@@ -18,11 +19,11 @@ export default function ConversationList({
     <div className="flex-1 overflow-y-auto p-3 space-y-1.5">
       {conversations.length === 0 ? (
         <div className="text-center py-12 px-4">
-          <p className="text-xs text-muted-foreground">
+          <Typography variant="caption">
             {searchQuery
               ? "No conversations found"
               : "No chats yet. Start a new conversation!"}
-          </p>
+          </Typography>
         </div>
       ) : (
         conversations.map((conv) => (

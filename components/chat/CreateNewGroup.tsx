@@ -8,6 +8,7 @@ import {
 } from "@/store/api/apiSlice";
 import { Check, LoaderCircle, Search } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import Typography from "../ui/Typography";
 
 export default function CreateNewGroup({
   isOpen,
@@ -28,9 +29,7 @@ export default function CreateNewGroup({
   const searchValue = useDebounce(searchQuery, 500);
 
   useEffect(() => {
-    if (searchValue) {
-      triggerSearch(searchValue);
-    }
+    triggerSearch(searchValue);
   }, [searchValue, triggerSearch]);
 
   const toggleParticipant = (userId: string) => {
@@ -90,12 +89,12 @@ export default function CreateNewGroup({
                   className={`flex items-center justify-between p-2.5 rounded-xl border cursor-pointer ${isSelected ? "bg-primary/15 border-primary/40" : "bg-background border-border"}`}
                 >
                   <div>
-                    <h4 className="text-xs font-semibold text-foreground">
+                    <Typography className="text-xs font-semibold text-foreground">
                       {user.name}
-                    </h4>
-                    <p className="text-[11px] text-muted-foreground">
+                    </Typography>
+                    <Typography className="text-xs text-muted-foreground">
                       {user.phone}
-                    </p>
+                    </Typography>
                   </div>
                   <div
                     className={`w-5 h-5 rounded-full flex items-center justify-center border ${isSelected ? "bg-primary border-primary text-white" : "border-border"}`}
@@ -116,7 +115,7 @@ export default function CreateNewGroup({
           }
           isLoading={isCreatingGroup}
         >
-          Create Group Conversation
+          Create Group
         </Button>
       </form>
     </Modal>

@@ -1,5 +1,6 @@
+import { useDebounce } from "@/hooks/useDebouncer";
 import { Conversation } from "@/types/type";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ConversationList from "./ConversationList";
 import SidebarFooter from "./SidebarFooter";
 import SidebarHeader from "./SidebarHeader";
@@ -20,6 +21,13 @@ export default function Sidebar({
   currentUser,
 }: SidebarProps) {
   const [searchQuery, setSearchQuery] = useState("");
+  const searchValue = useDebounce(searchQuery, 500);
+
+  useEffect(() => {
+    if (searchValue) {
+      // api call will be here
+    }
+  }, [searchValue]);
 
   const filteredConversations = conversations.filter((conv) => {
     const name =

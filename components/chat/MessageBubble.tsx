@@ -1,6 +1,7 @@
 import Avatar from "@/components/ui/Avatar";
 import { Message } from "@/types/type";
 import React from "react";
+import Typography from "../ui/Typography";
 
 interface MessageBubbleProps {
   message: Message;
@@ -34,9 +35,12 @@ export default function MessageBubble({
             : "bg-surface border border-border text-foreground rounded-bl-none"
         }`}
       >
-        <p className="text-sm leading-relaxed wrap-words whitespace-pre-wrap">
+        <Typography
+          variant="body"
+          className="text-sm leading-relaxed wrap-words whitespace-pre-wrap"
+        >
           {message.text}
-        </p>
+        </Typography>
         <div
           className={`text-[10px] mt-1 text-right font-medium ${
             isMe ? "text-white/80" : "text-muted-foreground"

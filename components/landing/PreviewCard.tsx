@@ -17,9 +17,13 @@ export default function PreviewCard() {
           </Typography>
         </div>
       </div>
-      <p className="text-xs text-muted-foreground bg-primary/5 p-3 rounded-xl leading-relaxed">
-        &quot;Secure session established with real-time message synchronization and strict privacy controls for all team communications.&quot;
-      </p>
+      <Typography
+        variant="body"
+        className="text-xs bg-primary/5 p-3 rounded-xl leading-relaxed"
+      >
+        &quot;Secure session established with real-time message synchronization
+        and strict privacy controls for all team communications.&quot;
+      </Typography>
     </Card>
   );
 }
