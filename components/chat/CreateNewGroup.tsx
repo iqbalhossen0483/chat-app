@@ -2,6 +2,7 @@ import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
 import Modal from "@/components/ui/Modal";
 import { useDebounce } from "@/hooks/useDebouncer";
+import { errorHandler } from "@/services/errorHandler";
 import {
   useCreateGroupMutation,
   useLazySearchUsersQuery,
@@ -50,8 +51,8 @@ export default function CreateNewGroup({
       }).unwrap();
       onConversationCreated(res._id);
       onClose();
-    } catch (err) {
-      console.error(err);
+    } catch (err: unknown) {
+      errorHandler(err, "Failed to create group");
     }
   };
 

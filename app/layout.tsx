@@ -2,6 +2,7 @@ import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import ReduxProvider from "@/components/providers/ReduxProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ToastContainer } from "react-toastify";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
         <NextAuthProvider>
           <ReduxProvider>{children}</ReduxProvider>
         </NextAuthProvider>
+        <ToastContainer />
       </body>
     </html>
   );

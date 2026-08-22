@@ -39,3 +39,17 @@ export interface Message {
   text: string;
   createdAt: string;
 }
+
+export interface ApiErrorResponse {
+  status: number;
+  data: {
+    error: {
+      message: string;
+      code: string;
+      details: {
+        path: string;
+        message: string;
+      }[];
+    };
+  };
+}
