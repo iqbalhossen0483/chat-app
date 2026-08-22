@@ -24,7 +24,7 @@ export default function SidebarHeader({
         className="py-2 text-xs"
       />
 
-      <IconButton onClick={onOpenNewDirectMessage}>
+      <IconButton title="Search new friend" onClick={onOpenNewDirectMessage}>
         <UserSearch className="size-5" />
       </IconButton>
     </div>
