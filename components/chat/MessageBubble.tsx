@@ -3,25 +3,20 @@ import { Message } from "@/types/type";
 import Typography from "../ui/Typography";
 
 interface MessageBubbleProps {
-  message?: Message;
-  currentUserId?: string;
-  draftMessage?: string;
+  message: Message;
+  currentUserId: string;
 }
 
 export default function MessageBubble({
   message,
   currentUserId,
-  draftMessage,
 }: MessageBubbleProps) {
-  const isMe = (message && message.sender === currentUserId) || draftMessage;
+  const isMe = message.sender === currentUserId;
 
-  const formattedTime =
-    (message &&
-      new Date(message.createdAt).toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      })) ||
-    (draftMessage && "Sending...");
+  const formattedTime = new Date(message.createdAt).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
   return (
     <div
@@ -43,7 +38,7 @@ export default function MessageBubble({
           variant="body"
           className={`text-sm leading-relaxed wrap-words whitespace-pre-wrap ${isMe ? "text-white" : ""}`}
         >
-          {message ? message.text : draftMessage}
+          {message.text}
         </Typography>
         <div
           className={`text-[10px] mt-1 text-right font-medium ${

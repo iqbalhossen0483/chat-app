@@ -41,7 +41,7 @@ export default function Button({
     >
       {isLoading ? (
         <span className="flex items-center gap-2">
-          <LoaderCircle className="animate-spin" />
+          <LoaderCircle className="animate-spin size-4" />
         </span>
       ) : (
         children

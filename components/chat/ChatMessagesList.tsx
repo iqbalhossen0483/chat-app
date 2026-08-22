@@ -82,7 +82,7 @@ export default function ChatMessagesList({
           <MessageBubble
             key={index}
             message={msg}
-            currentUserId={currentUserId}
+            currentUserId={currentUserId as string}
           />
         ))
       )}
