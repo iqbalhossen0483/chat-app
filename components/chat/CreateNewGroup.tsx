@@ -2,11 +2,11 @@ import Button from "@/components/ui/Button";
 import InputField from "@/components/ui/InputField";
 import Modal from "@/components/ui/Modal";
 import { useDebounce } from "@/hooks/useDebouncer";
-import { errorHandler } from "@/services/errorHandler";
+import { errorHandler } from "@/services/error/errorHandler";
 import {
   useCreateGroupMutation,
   useLazySearchUsersQuery,
-} from "@/store/api/apiSlice";
+} from "@/store/api/chatApiSlice";
 import { Check, LoaderCircle, Search } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import Typography from "../ui/Typography";

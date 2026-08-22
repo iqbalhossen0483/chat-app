@@ -1,7 +1,7 @@
-import { LogOut, Sun, Users } from "lucide-react";
+import { LogOut, Users } from "lucide-react";
 import { signOut } from "next-auth/react";
-import React, { useState } from "react";
-import Switch from "../ui/Switch";
+import React from "react";
+import ThemeButton from "../ui/ThemeButton";
 
 type Props = {
   setIsPopoverOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -9,14 +9,6 @@ type Props = {
 };
 
 const FooterPopover = ({ setIsPopoverOpen, onOpenNewChat }: Props) => {
-  const [isDarkMode, setIsDarkMode] = useState(true);
-
-  const handleThemeToggle = (checked: boolean) => {
-    setIsDarkMode(checked);
-    document.documentElement.classList.toggle("dark", checked);
-    localStorage.setItem("theme", checked ? "dark" : "light");
-  };
-
   return (
     <div className="absolute bottom-full right-0 mb-2 w-56 rounded-2xl bg-surface border border-border shadow-xl p-2 z-50 glass-panel animate-in fade-in zoom-in-95 duration-150">
       <div className="space-y-1">
@@ -31,13 +23,7 @@ const FooterPopover = ({ setIsPopoverOpen, onOpenNewChat }: Props) => {
           <span>Create Group</span>
         </button>
 
-        <div className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium text-foreground hover:bg-surface/80">
-          <div className="flex items-center gap-3">
-            <Sun className="w-4 h-4 text-primary" />
-            <span>Theme</span>
-          </div>
-          <Switch checked={isDarkMode} onChange={handleThemeToggle} />
-        </div>
+        <ThemeButton />
 
         <div className="my-1 border-t border-border" />
 

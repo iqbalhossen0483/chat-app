@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useSession } from "next-auth/react";
-import { io } from "socket.io-client";
-import { apiSlice } from "@/store/api/apiSlice";
-import { useAppDispatch } from "@/store/store";
 import ChatLayout from "@/components/chat/ChatLayout";
+import { useAppDispatch } from "@/store";
+import { chatApiSlice } from "@/store/api/chatApiSlice";
+import { useSession } from "next-auth/react";
+import React, { useEffect } from "react";
+import { io } from "socket.io-client";
 
 export default function ChatPage() {
   const { data: session } = useSession();
@@ -26,21 +26,21 @@ export default function ChatPage() {
 
     socket.on("message:new", (message) => {
       dispatch(
-        apiSlice.util.updateQueryData(
+        chatApiSlice.util.updateQueryData(
           "getMessages",
           message.conversation,
           (draft) => {
             if (!draft.some((m) => m._id === message._id)) {
               draft.push(message);
             }
-          }
-        )
+          },
+        ),
       );
-      dispatch(apiSlice.util.invalidateTags(["Conversation"]));
+      dispatch(chatApiSlice.util.invalidateTags(["Conversation"]));
     });
 
     socket.on("conversation:updated", () => {
-      dispatch(apiSlice.util.invalidateTags(["Conversation"]));
+      dispatch(chatApiSlice.util.invalidateTags(["Conversation"]));
     });
 
     return () => {
@@ -56,4 +56,3 @@ export default function ChatPage() {
 
   return <ChatLayout currentUser={currentUser} />;
 }
-

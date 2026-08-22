@@ -1,5 +1,6 @@
 import NextAuthProvider from "@/components/providers/NextAuthProvider";
 import ReduxProvider from "@/components/providers/ReduxProvider";
+import ThemeProvider from "@/components/providers/ThemeProvider";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ToastContainer } from "react-toastify";
@@ -36,7 +37,9 @@ export default function RootLayout({
     >
       <body>
         <NextAuthProvider>
-          <ReduxProvider>{children}</ReduxProvider>
+          <ReduxProvider>
+            <ThemeProvider>{children}</ThemeProvider>
+          </ReduxProvider>
         </NextAuthProvider>
         <ToastContainer />
       </body>

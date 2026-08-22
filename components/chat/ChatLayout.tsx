@@ -1,4 +1,4 @@
-import { useGetConversationsQuery } from "@/store/api/apiSlice";
+import { useGetConversationsQuery } from "@/store/api/chatApiSlice";
 import { MessageSquare } from "lucide-react";
 import React, { useState } from "react";
 import ChatArea from "./ChatArea";

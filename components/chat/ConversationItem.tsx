@@ -1,5 +1,5 @@
 import Avatar from "@/components/ui/Avatar";
-import { Conversation } from "@/store/api/apiSlice";
+import { Conversation } from "@/types/type";
 import { Users } from "lucide-react";
 import React from "react";
 

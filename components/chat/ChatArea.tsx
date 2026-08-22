@@ -3,7 +3,7 @@ import Button from "@/components/ui/Button";
 import {
   useGetMessagesQuery,
   useSendMessageMutation,
-} from "@/store/api/apiSlice";
+} from "@/store/api/chatApiSlice";
 import { Conversation } from "@/types/type";
 import { Phone, Send, ShieldCheck, Users } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
