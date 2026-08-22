@@ -1,6 +1,7 @@
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { X } from "lucide-react";
 import React from "react";
+import { createPortal } from "react-dom";
 
 export default function Modal({
   isOpen,
@@ -16,7 +17,7 @@ export default function Modal({
   const modalRef = useOutsideClick<HTMLDivElement>(() => onClose());
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
       <div
         ref={modalRef}
@@ -35,6 +36,7 @@ export default function Modal({
         )}
         <div className="p-6 max-h-[80vh] overflow-y-auto">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
