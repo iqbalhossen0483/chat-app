@@ -1,8 +1,16 @@
-import Avatar from "@/components/ui/Avatar";
 import Modal from "@/components/ui/Modal";
 import Typography from "@/components/ui/Typography";
+import { errorHandler } from "@/services/error/errorHandler";
+import {
+  usePromoteAdminMutation,
+  useRemoveParticipantMutation,
+} from "@/store/api/chatApiSlice";
 import { Conversation } from "@/types/type";
+import { useSession } from "next-auth/react";
 import React from "react";
+import { toast } from "react-toastify";
+import GroupActionsMenu from "./GroupActionsMenu";
+import GroupParticipantItem from "./GroupParticipantItem";
 
 interface SeeAllMembersModalProps {
   isOpen: boolean;
@@ -15,71 +23,93 @@ export default function SeeAllMembersModal({
   onClose,
   conversation,
 }: SeeAllMembersModalProps) {
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Group Members">
-      <div className="space-y-3">
-        {conversation.participants && conversation.participants.length > 0 ? (
-          conversation.participants.map((participant, index) => {
-            const participantName =
-              typeof participant === "object" &&
-              participant !== null &&
-              "name" in participant
-                ? (participant as any).name
-                : "Member";
-            const participantPhone =
-              typeof participant === "object" &&
-              participant !== null &&
-              "phone" in participant
-                ? (participant as any).phone
-                : "";
-            const isAdmin = conversation.admins?.includes(
-              typeof participant === "object" &&
-                participant !== null &&
-                "_id" in participant
-                ? (participant as any)._id
-                : participant
-            );
+  const session = useSession();
+  const currentUser = session.data?.user;
+  const isCurrentUserAdmin = !!conversation.admins?.includes(
+    currentUser?.id || "",
+  );
+  const [removeParticipant, { isLoading: isRemoving }] =
+    useRemoveParticipantMutation();
+  const [promoteAdmin, { isLoading: isPromoting }] = usePromoteAdminMutation();
 
-            return (
-              <div
-                key={index}
-                className="flex items-center justify-between p-2 rounded-xl bg-background/50 border border-border/50"
-              >
-                <div className="flex items-center gap-3">
-                  <Avatar name={participantName} size="sm" />
-                  <div>
-                    <Typography
-                      variant="body"
-                      className="text-xs font-semibold text-foreground"
-                    >
-                      {participantName}
-                    </Typography>
-                    {participantPhone && (
-                      <Typography
-                        variant="caption"
-                        className="text-[11px] text-muted-foreground"
-                      >
-                        {participantPhone}
-                      </Typography>
-                    )}
-                  </div>
-                </div>
-                {isAdmin && (
-                  <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
-                    Admin
-                  </span>
-                )}
-              </div>
-            );
-          })
-        ) : (
+  const handleAddParticipant = () => {
+    alert("Add participant action clicked");
+  };
+
+  const handleRenameGroup = () => {
+    alert("Rename group action clicked");
+  };
+
+  const handleRemoveMember = async (participantId: string) => {
+    try {
+      await removeParticipant({
+        conversationId: conversation._id,
+        userId: participantId,
+      });
+      toast.success("Participant removed successfully");
+    } catch (error) {
+      errorHandler(error, "Failed to remove participant");
+    }
+  };
+
+  const handleMakeAdmin = async (participantId: string) => {
+    try {
+      await promoteAdmin({
+        conversationId: conversation._id,
+        userId: participantId,
+      });
+      toast.success("Admin promoted successfully");
+    } catch (err: unknown) {
+      errorHandler(err, "Failed to promote admin");
+    }
+  };
+
+  return (
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <div className="space-y-2">
+        {/* Top Group Actions Menu Header */}
+        <div className="flex items-center justify-between pb-2">
           <Typography
-            variant="caption"
-            className="text-xs text-muted-foreground text-center py-4"
+            variant="body"
+            className="text-sm text-muted-foreground font-medium"
           >
-            No participants found.
+            Member List
           </Typography>
-        )}
+          <GroupActionsMenu
+            onAddParticipant={handleAddParticipant}
+            onRenameGroup={handleRenameGroup}
+          />
+        </div>
+
+        {/* Members List */}
+        <div className="space-y-2 max-h-[50vh] overflow-y-auto pr-1">
+          {conversation.participants && conversation.participants.length > 0 ? (
+            conversation.participants.map((participant) => {
+              const isAdmin = !!conversation.admins?.includes(participant._id);
+
+              return (
+                <GroupParticipantItem
+                  key={participant._id}
+                  participant={participant}
+                  isAdmin={isAdmin}
+                  onRemove={handleRemoveMember}
+                  onMakeAdmin={handleMakeAdmin}
+                  currentUserId={currentUser?.id || ""}
+                  isRemoving={isRemoving}
+                  isPromoting={isPromoting}
+                  isCurrentUserAdmin={isCurrentUserAdmin}
+                />
+              );
+            })
+          ) : (
+            <Typography
+              variant="caption"
+              className="text-xs text-muted-foreground text-center py-4 block"
+            >
+              No participants found.
+            </Typography>
+          )}
+        </div>
       </div>
     </Modal>
   );
