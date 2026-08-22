@@ -5,18 +5,18 @@ export interface User {
   createdAt?: string;
 }
 
+export interface Message {
+  _id: string;
+  conversation: string;
+  sender: string;
+  text: string;
+  createdAt: string;
+}
+
 export interface ConversationParticipant {
   _id: string;
   name: string;
   phone: string;
-}
-
-export interface LastMessage {
-  _id?: string;
-  conversation?: string;
-  sender?: string;
-  text: string;
-  createdAt: string;
 }
 
 export interface Conversation {
@@ -27,17 +27,9 @@ export interface Conversation {
   admins?: string[];
   participants?: ConversationParticipant[];
   participant?: ConversationParticipant; // For direct conversations
-  lastMessage?: LastMessage;
+  lastMessage?: Message;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface Message {
-  _id: string;
-  conversation: string;
-  sender: string;
-  text: string;
-  createdAt: string;
 }
 
 export interface ApiErrorResponse {
@@ -53,3 +45,33 @@ export interface ApiErrorResponse {
     };
   };
 }
+
+export interface SingleConversationApiResponse {
+  messages: Message[];
+  hasMore: boolean;
+}
+
+export type UserApiResponse = User[];
+
+export interface AllConversationApiResponse {
+  data: Conversation[];
+}
+
+export type SendMessageResponse = Message;
+export interface SendMessageBody {
+  conversationId: string;
+  text: string;
+}
+
+export type CreateGroupResponse = Conversation;
+export interface CreateGroupBody {
+  name: string;
+  participantIds: string[];
+}
+
+export type AddMemberToAGroupBody = {
+  conversationId: string;
+  userIds: string[];
+};
+
+export type AddMemberToGroupResponse = Conversation;

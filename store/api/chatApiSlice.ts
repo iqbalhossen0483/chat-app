@@ -1,10 +1,21 @@
-import { Conversation, Message, User } from "@/types/type";
+import {
+  AddMemberToAGroupBody,
+  AddMemberToGroupResponse,
+  AllConversationApiResponse,
+  Conversation,
+  CreateGroupBody,
+  CreateGroupResponse,
+  SendMessageBody,
+  SendMessageResponse,
+  SingleConversationApiResponse,
+  UserApiResponse,
+} from "@/types/type";
 import { apiSlice } from "./apiSlice";
 
 export const chatApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     // Users endpoints
-    searchUsers: builder.query<User[], string>({
+    searchUsers: builder.query<UserApiResponse, string>({
       query: (searchTerm) => ({
         url: "/users/search",
         params: searchTerm ? { q: searchTerm } : undefined,
@@ -13,7 +24,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
     }),
 
     // Conversations endpoints
-    getConversations: builder.query<{ data: Conversation[] }, void>({
+    getConversations: builder.query<AllConversationApiResponse, void>({
       query: () => "/conversations",
       providesTags: ["Conversation"],
     }),
@@ -28,7 +39,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Conversation"],
     }),
-    getMessages: builder.query<{ messages: Message[] }, string>({
+    getMessages: builder.query<SingleConversationApiResponse, string>({
       query: (conversationId) => `/conversations/${conversationId}/messages`,
       providesTags: (_result, _error, conversationId) => [
         { type: "Message", id: conversationId },
@@ -36,10 +47,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
     }),
 
     // Messages endpoints
-    sendMessage: builder.mutation<
-      Message,
-      { conversationId: string; text: string }
-    >({
+    sendMessage: builder.mutation<SendMessageResponse, SendMessageBody>({
       query: (body) => ({
         url: "/messages",
         method: "POST",
@@ -52,10 +60,7 @@ export const chatApiSlice = apiSlice.injectEndpoints({
     }),
 
     // Group endpoints
-    createGroup: builder.mutation<
-      Conversation,
-      { name: string; participantIds: string[] }
-    >({
+    createGroup: builder.mutation<CreateGroupResponse, CreateGroupBody>({
       query: (body) => ({
         url: "/conversations/group",
         method: "POST",
@@ -64,13 +69,13 @@ export const chatApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Conversation"],
     }),
     addParticipants: builder.mutation<
-      Conversation,
-      { conversationId: string; participantIds: string[] }
+      AddMemberToGroupResponse,
+      AddMemberToAGroupBody
     >({
-      query: ({ conversationId, participantIds }) => ({
+      query: ({ conversationId, userIds }) => ({
         url: `/conversations/${conversationId}/participants`,
         method: "POST",
-        body: { participantIds },
+        body: { userIds },
       }),
       invalidatesTags: ["Conversation"],
     }),
