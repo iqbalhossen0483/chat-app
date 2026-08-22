@@ -4,7 +4,7 @@ import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { errorHandler } from "@/services/error/errorHandler";
 import { useRemoveParticipantMutation } from "@/store/api/chatApiSlice";
 import { Conversation } from "@/types/type";
-import { Settings, Users } from "lucide-react";
+import { ArrowLeft, Settings, Users } from "lucide-react";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import GroupSettingMenusPopover from "./GroupSettingMenusPopover";
@@ -13,10 +13,12 @@ import SeeAllMembersModal from "./SeeAllMembersModal";
 
 interface GroupChatHeaderProps {
   conversation: Conversation;
+  onBack?: () => void;
 }
 
 export default function GroupChatHeader({
   conversation,
+  onBack,
 }: GroupChatHeaderProps) {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isMembersModalOpen, setIsMembersModalOpen] = useState(false);
@@ -54,8 +56,17 @@ export default function GroupChatHeader({
   };
 
   return (
-    <div className="px-6 py-4 border-b border-border bg-surface/80 backdrop-blur-md flex items-center justify-between z-10 relative">
-      <div className="flex items-center gap-3.5">
+    <div className="px-4 md:px-6 py-3.5 md:py-4 border-b border-border bg-surface/80 backdrop-blur-md flex items-center justify-between z-10 relative">
+      <div className="flex items-center gap-2.5 md:gap-3.5">
+        {onBack && (
+          <IconButton
+            onClick={onBack}
+            className="md:hidden p-1.5 -ml-1 text-muted-foreground hover:text-foreground"
+            aria-label="Back to conversations"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </IconButton>
+        )}
         <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
           <Users className="w-5 h-5" />
         </div>

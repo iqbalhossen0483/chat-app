@@ -36,7 +36,7 @@ export default function LandingHeader() {
           )}
           {user && (
             <>
-              <Link href="/chat">
+              <Link href="/chat" className="hidden md:block">
                 <Button variant="primary" size="sm" className="gap-2">
                   Go Platform <ArrowRight className="w-4 h-4" />
                 </Button>

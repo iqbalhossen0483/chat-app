@@ -9,11 +9,13 @@ import SingleChatHeader from "./SingleChatHeader";
 interface ChatAreaProps {
   conversation: Conversation;
   currentUserId?: string;
+  onBack?: () => void;
 }
 
 export default function ChatArea({
   conversation,
   currentUserId,
+  onBack,
 }: ChatAreaProps) {
   const {
     data: messages = { messages: [] },
@@ -27,9 +29,9 @@ export default function ChatArea({
     <div className="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
       {/* Header */}
       {isGroup ? (
-        <GroupChatHeader conversation={conversation} />
+        <GroupChatHeader conversation={conversation} onBack={onBack} />
       ) : (
-        <SingleChatHeader conversation={conversation} />
+        <SingleChatHeader conversation={conversation} onBack={onBack} />
       )}
 
       {/* Messages List Area */}
@@ -45,3 +47,4 @@ export default function ChatArea({
     </div>
   );
 }
+

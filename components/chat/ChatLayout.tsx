@@ -30,16 +30,26 @@ export default function ChatLayout({ currentUser }: ChatLayoutProps) {
 
   return (
     <div className="flex h-screen w-screen overflow-hidden bg-background">
-      <Sidebar
-        conversations={conversations.data}
-        activeConversationId={activeConversationId}
-        onSelectConversation={setActiveConversationId}
-        onOpenNewGroup={() => setIsNewGroupModalOpen(true)}
-        currentUser={currentUser}
-        onOpenNewDirectMessage={() => setIsNewDirectMessageModalOpen(true)}
-      />
+      <div
+        className={`${
+          activeConversationId ? "hidden md:flex" : "flex w-full"
+        } md:w-80 lg:w-96 shrink-0 h-full`}
+      >
+        <Sidebar
+          conversations={conversations.data}
+          activeConversationId={activeConversationId}
+          onSelectConversation={setActiveConversationId}
+          onOpenNewGroup={() => setIsNewGroupModalOpen(true)}
+          currentUser={currentUser}
+          onOpenNewDirectMessage={() => setIsNewDirectMessageModalOpen(true)}
+        />
+      </div>
 
-      <main className="flex-1 flex flex-col h-full overflow-hidden">
+      <main
+        className={`${
+          activeConversationId ? "flex w-full" : "hidden md:flex"
+        } flex-1 flex-col h-full overflow-hidden`}
+      >
         {isLoading ? (
           <div className="flex-1 flex items-center justify-center">
             <p className="text-sm text-muted-foreground animate-pulse">
@@ -56,6 +66,7 @@ export default function ChatLayout({ currentUser }: ChatLayoutProps) {
           <ChatArea
             conversation={activeConversation}
             currentUserId={currentUser?.id}
+            onBack={() => setActiveConversationId(undefined)}
           />
         ) : (
           <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
@@ -87,3 +98,4 @@ export default function ChatLayout({ currentUser }: ChatLayoutProps) {
     </div>
   );
 }
+
